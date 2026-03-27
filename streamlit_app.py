@@ -3,6 +3,7 @@ import streamlit as st
 from snowflake.snowpark.functions import col
 import requests 
 import pandas as pd
+from urllib.parse import quote
 
 # Write directly to the app
 st.title(f":cup_with_straw: Customize your Smoothie! :cup_with_straw:")
@@ -32,8 +33,7 @@ if ingredients_list:
     ingredients_string += fruit_chosen + ' '
 
     st.subheader(fruit_chosen + ' Nutrition Information')
-    smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/" + fruit_chosen)  
-    st.write(smoothiefroot_response)
+    smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/" + quote(fruit_chosen), timeout=10)  
     sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
 
     # url = "https://my.smoothiefroot.com/api/fruit/" + quote(fruit_chosen)
