@@ -18,7 +18,11 @@ st.write('The name on your Smoothie will be:',name_on_order)
 cnx = st.connection("snowflake")
 session = cnx.session()
 
-my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'))
+my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'),col('SEARCH_ON')
+
+# Convert the Snowflake Dataframe to Pandas Dataframe so we can use the LOC function
+pd_df=my_dataframe.to_panda()
+# st.datframe(pd_df)
 
 ingredients_list = st.multiselect(
     'Choose upto 5 ingredients:'
@@ -32,22 +36,14 @@ if ingredients_list:
   for fruit_chosen in ingredients_list:
     ingredients_string += fruit_chosen + ' '
 
-    st.subheader(fruit_chosen + ' Nutrition Information')
-    smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/" + quote(fruit_chosen), timeout=10)  
-    sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
+    search_on=pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
+    st.write('The search value for ', fruit_chosen,' is ', search_on, '.')
 
-    # url = "https://my.smoothiefroot.com/api/fruit/" + quote(fruit_chosen)
-    # try:
-    #   smoothiefroot_response = requests.get(url, timeout=10)
-    #   smoothiefroot_response.raise_for_status()
-      
-    #   data = smoothiefroot_response.json()
-    #   df = pd.json_normalize(data)
-    #   st.dataframe(df, use_container_width=True)
-      
-    # except requests.exceptions.RequestException as e:
-    #   st.error(f"API request failed for {fruit_chosen}: {e}")
-    
+    st.subheader(fruit_chosen + ' Nutrition Information')
+    fruityvice_response = requests.get("https://my.smoothiefroot.com/api/fruit/" + fruit_chosen)  
+    sf_df = st.dataframe(data=fruityvice_response.json(), use_container_width=True)
+
+        
     my_insert_stmt = """ insert into smoothies.public.orders(ingredients, name_on_order)
                     values ('""" + ingredients_string + """','"""+name_on_order+"""')"""
     
