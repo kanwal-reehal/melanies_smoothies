@@ -31,7 +31,7 @@ if ingredients_list:
     ingredients_string += fruit_chosen + ' '
 
     # requests.get() expects a plain URL like:
-    url = "https://my.smoothiefroot.com/api/fruit/" + fruit_chosen
+    url = "https://my.smoothiefroot.com/api/fruit/" + quote(fruit_chosen)
     try:
         smoothiefroot_response = requests.get(url, timeout=10)
         smoothiefroot_response.raise_for_status()
