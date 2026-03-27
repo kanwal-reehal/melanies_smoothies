@@ -32,15 +32,15 @@ if ingredients_list:
 
     url = "https://my.smoothiefroot.com/api/fruit/" + quote(fruit_chosen)
     try:
-            smoothiefroot_response = requests.get(url, timeout=10)
-            smoothiefroot_response.raise_for_status()
-
-            data = smoothiefroot_response.json()
-            df = pd.json_normalize(data)
-            st.dataframe(df, use_container_width=True)
-
-        except requests.exceptions.RequestException as e:
-            st.error(f"API request failed for {fruit_chosen}: {e}")
+      smoothiefroot_response = requests.get(url, timeout=10)
+      smoothiefroot_response.raise_for_status()
+      
+      data = smoothiefroot_response.json()
+      df = pd.json_normalize(data)
+      st.dataframe(df, use_container_width=True)
+      
+    except requests.exceptions.RequestException as e:
+      st.error(f"API request failed for {fruit_chosen}: {e}")
     
     my_insert_stmt = """ insert into smoothies.public.orders(ingredients, name_on_order)
                     values ('""" + ingredients_string + """','"""+name_on_order+"""')"""
