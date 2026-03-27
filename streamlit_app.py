@@ -40,5 +40,18 @@ if ingredients_list:
         
 # Display the smoothiefroot nutrition information, using the APIs
 import requests  
-smoothiefroot_response = requests.get("[https://my.smoothiefroot.com/api/fruit/watermelon](https://my.smoothiefroot.com/api/fruit/watermelon)")  
-sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
+# Code that failed: That is Markdown link syntax, not a raw URL.
+# smoothiefroot_response = requests.get("[https://my.smoothiefroot.com/api/fruit/watermelon](https://my.smoothiefroot.com/api/fruit/watermelon)")  
+# sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
+
+# requests.get() expects a plain URL like:
+url = "https://my.smoothiefroot.com/api/fruit/watermelon"
+try:
+    smoothiefroot_response = requests.get(url, timeout=10)
+    smoothiefroot_response.raise_for_status()
+
+    data = smoothiefroot_response.json()
+    st.dataframe(data=data, use_container_width=True)
+
+except requests.exceptions.RequestException as e:
+    st.error(f"API request failed: {e}")
